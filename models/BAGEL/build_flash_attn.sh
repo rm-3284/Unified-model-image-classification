@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH --job-name=flash_attn_build  # Job name
+#SBATCH --error=error_%j.err
+#SBATCH --nodes=1                  # Number of nodes
+#SBATCH --ntasks=1                 # Number of tasks
+#SBATCH --gres=gpu:1               # Number of GPUs per node
+#SBATCH --cpus-per-task=8          # CPU cores per task
+#SBATCH --mem=40G                  # Memory per node
+#SBATCH --time=00:30:00            # Time limit (1 hour)
+#SBATCH --output=output_%j.log     # Output file (%j = job ID)
+#SBATCH --partition=all
+
+module purge
+module load cudatoolkit/12.4
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
+
+export MAX_JOBS=4
+# the first argument is the prompt
+source /usr/local/anaconda3/2024.02/etc/profile.d/conda.sh
+conda activate bagel
+pip install flash_attn==2.5.8 --no-build-isolation --use-pep517
+
